@@ -4,7 +4,7 @@ import { googleLogin, googleLoout, onUserState } from "../api/firebase";
 const AuthContext = createContext();
 
 export function AuthContextProvider({ children }) {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState();
     const [init, setInit] = useState(true);
 
     useEffect(() => {

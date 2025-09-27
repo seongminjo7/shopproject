@@ -2,6 +2,8 @@ import { initializeApp } from "firebase/app"
 import { GoogleAuthProvider, getAuth, onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
 import { get, getDatabase, ref } from "firebase/database";
 import { use } from "react";
+import { set } from "firebase/database";
+import { v4 as uuid } from 'uuid'
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -78,3 +80,38 @@ async function adminUser(user) {
     }
 }
 
+// 상품 정보를 파이어베이스에 업로드
+export async function addProduct(product, img) {
+    // yarn add uuid
+    // uuid 식별자를 만들어주는 라이브러리
+    // 숫자와 영문으로 조합된 식별자 코드를 부여해서 고유값으로 사용하는 라이브러리
+    const id = uuid()
+    return set(ref(database, `products/${id}`), {
+        ...product,
+        id,
+        img
+        // 기존에 있던 정보에 id를 추가해서 업로드 시킴
+    })
+}
+
+// 상품 가져오기
+export async function getProduct() {
+    const snapshot = await get(ref(database, 'products'))
+    if (snapshot.exists()) {
+        return Object.values(snapshot.val());
+    } else {
+        return []
+    }
+}
+
+// 카테고리별 상품 가져오기
+
+export async function getCategoryProduct(category) {
+    return get(ref(database, 'products')).then(snapshot => {
+        if (snapshot.exists()) {
+            const allProduct = Object.values(snapshot.val());
+            const fillterProduct = allProduct.filter(product => product.category === category)
+            return fillterProduct
+        }
+    })
+}
