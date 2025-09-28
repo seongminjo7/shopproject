@@ -138,6 +138,11 @@ export async function updateCart(userId, product) {
 
     const variantId = keyValue(product); // productId_option으로 나옴
     console.log(variantId)
+
+    const cartKey = (product.productId && product.id) ? product.id : keyValue({
+        id: product.id, option: product.option
+    })
+
     const itemRef = ref(database, `cart/${userId}/${variantId}`)
     console.log(itemRef)
     const itemDelta = Number(product.quantity) || 1
@@ -149,7 +154,7 @@ export async function updateCart(userId, product) {
 
     try {
         const cartRef = ref(database, `cart/${userId}/${product.id}`)
-        await set(itemRef, { ...product, id: variantId, productId: product.id, quantity: nextQty })
+        await set(itemRef, { ...product, id: cartKey, productId: product.id, quantity: nextQty })
     } catch (error) {
         console.error(error);
     }
