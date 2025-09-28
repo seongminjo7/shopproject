@@ -6,11 +6,18 @@ import reportWebVitals from './reportWebVitals';
 import Router from './router/Router';
 import Header from './components/Header';
 import GlobalStyle from './styles/GlobalStyle';
+import { AuthContextProvider } from './context/AuthContext';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+const queryClient = new QueryClient()
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Router/>
+    <QueryClientProvider client={queryClient}>
+      <AuthContextProvider>
+        <Router />
+      </AuthContextProvider>
+    </QueryClientProvider>
   </React.StrictMode>
 );
 

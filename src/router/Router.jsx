@@ -5,6 +5,8 @@ import App from "../App"
 import CategoryPage from "../pages/CategoryPage"
 import UploadProduct from "../pages/UploadProduct"
 import { useAuthContext } from "../context/AuthContext"
+import ProductDetailPage from "../pages/ProductDetailPage"
+import MyCart from "../pages/MyCart"
 
 export default function Router() {
 
@@ -26,7 +28,9 @@ export default function Router() {
             errorElement: <NotFound />,
             children: [
                 { index: true, element: <Main /> },
+                { path: '/cart', element: <MyCart /> },
                 { path: '/products/:category', element: <CategoryPage /> },
+                { path: '/products/detail/:id', element: <ProductDetailPage /> },
                 {
                     path: '/products/upload',
                     element:

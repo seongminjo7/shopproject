@@ -30,6 +30,7 @@ export default function Header() {
             </h1>
             <MainMenu />
             <div className="userInfoWrap">
+                <Link to='/cart'>장바구니</Link>
                 {user && user.isAdmin &&
                     <Link to='/products/upload'>업로드</Link>
                 }

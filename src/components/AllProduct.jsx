@@ -11,7 +11,7 @@ export default function AllProduct() {
             try {
                 const products = await getProduct()
                 setProducts(products)
-                console.log(products)
+                // console.log(products)
             } catch (error) {
                 console.error(error);
             }

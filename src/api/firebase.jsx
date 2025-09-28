@@ -1,9 +1,10 @@
 import { initializeApp } from "firebase/app"
 import { GoogleAuthProvider, getAuth, onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
-import { get, getDatabase, ref } from "firebase/database";
+import { get, getDatabase, ref, remove } from "firebase/database";
 import { use } from "react";
 import { set } from "firebase/database";
 import { v4 as uuid } from 'uuid'
+import { keyValue } from "../utill/CartKey";
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -114,4 +115,46 @@ export async function getCategoryProduct(category) {
             return fillterProduct
         }
     })
+}
+
+// 장바구니 리스트 불러오기
+export async function getCart(userId) {
+    try {
+        const snapshot = await (get(ref(database, `cart/${userId}`)));
+        if (snapshot.exists()) {
+            const item = snapshot.val()
+            // console.log(item)
+            return Object.entries(item).map(([id, value]) => ({ id, ...value })).filter(Boolean);
+        } else {
+            return []
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+// 장바구니 정보를 업데이트
+export async function updateCart(userId, product) {
+
+    const variantId = keyValue(product); // productId_option으로 나옴
+    console.log(variantId)
+    const itemRef = ref(database, `cart/${userId}/${variantId}`)
+    console.log(itemRef)
+    const itemDelta = Number(product.quantity) || 1
+
+    const snap = await get(itemRef)
+    const prev = snap.exists() ? snap.val : null
+    const prevQty = Number(prev?.quantity) || 0
+    const nextQty = prevQty + itemDelta
+
+    try {
+        const cartRef = ref(database, `cart/${userId}/${product.id}`)
+        await set(itemRef, { ...product, id: variantId, productId: product.id, quantity: nextQty })
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export async function deleteCart(userId, productId) {
+    return remove(ref(database, `cart/${userId}/${productId}`))
 }

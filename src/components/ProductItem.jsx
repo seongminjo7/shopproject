@@ -1,12 +1,13 @@
 import styled from "styled-components"
+import ProductDeatil from "./ProductDetail"
 
 export default function ProductItem({ products }) {
-    console.log(products)
+    // console.log(products)
     return (
         <ProductList>
             {products && products.map(el => (
                 <li key={el.id}>
-                    <img src={el.img} />
+                    <ProductDeatil product={el} />
                 </li>
             ))}
         </ProductList>
